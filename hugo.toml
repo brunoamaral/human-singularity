@@ -1,6 +1,11 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme='soft-ui'
+baseURL = "https://human-singularity.org/"
+languageCode = "en-uk"
+title = "Human Singularity Network"
+theme = "soft-ui"
 [params]
-defaultAuthor=''
+defaultAuthor = ""
+sectionPagesMenu = 'main'
+[menu]
+[[menu.legal]]
+    name = '<strong>Tax ID</strong> PT517563363'
+    pageRef = ''
