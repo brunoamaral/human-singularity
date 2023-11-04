@@ -1,0 +1,42 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+	{{ if eq (print (.GetPage $ref).File) $ref }}
+		{{ $page = (.GetPage $ref) }}
+	{{ end }}
+{{ end }}
+
+
+
+{{ with $page }}
+
+
+	{{ $category := "" }}
+	{{ with $page.Params.categories }}
+	{{ $category = (index .Params.categories 0 ) }}
+	{{ end }}
+
+
+
+	{{ $image := "" }}
+	{{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+				<div class="card card-blog card-plain">
+					<div class="position-relative">
+						<a class="d-block blur-shadow-image" href="{{.Permalink}}">
+							<img src="{{ $image.Permalink }}" alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+						</a>
+					<div class="colored-shadow" style="background-image: url('{{ $image.Permalink }}');"></div></div>
+					<div class="card-body px-1 pt-3">
+						<p class="text-gradient text-primary mb-2 text-sm">{{ $category }}</p>
+						<a href="javascript:;">
+							<h5>
+								{{ .Title }}
+							</h5>
+						</a>
+						<p>
+							{{ .Summary | truncate 140 }}
+						</p>
+						<button type="button" class="btn btn-outline-primary btn-sm">{{ with ($.Get "cta") }} {{ .}} {{ else }} {{ T "read_more" }}	{{end}}</button>
+					</div>
+				</div>
+{{ end }}

@@ -1,0 +1,76 @@
+{{ $header := ""}}
+{{- with .Resources.GetMatch "header" -}}
+	{{- if eq .MediaType.SubType "gif" -}}
+		{{- $header = .RelPermalink -}}
+	{{- else }}
+		{{- $image := .Resize "1920x" -}}
+		{{- $header = $image.RelPermalink -}}
+	{{- end }}
+{{- else }}
+	{{- $header = $.Site.Params.headerPhoto -}}
+{{- end -}}
+{{ $titlecolor := "primary"	}}
+{{ with .Params.options.headerTitleColor  }}
+	{{$titlecolor = $.Params.options.headerTitleColor }}
+{{ end }}
+  <header>
+	<div class="page-header min-vh-50">
+	  <div class="position-absolute border-radius-lg border-top-start-radius-0 border-top-end-radius-0 border-bottom-end-radius-0 fixed-top ms-auto w-50 h-100 z-index-0 d-none d-sm-none d-md-block" 
+	  style="background-image: url('{{ $header }}'); background-size:cover;">
+	  </div>
+	  <div class="container">
+		<div class="row">
+		  <div class="col-lg-7 d-flex justify-content-center flex-column">
+			<div class="card card-body blur d-flex justify-content-center px-5 shadow-lg mt-lg-5 mt-3 py-5">
+			  <h1 class="text-gradient text-{{$titlecolor}} mb-0">{{ .Title }}</h1>
+			  <h2 class="mb-4 h1">{{- with .Params.subtitle }}{{ . }}{{ end }}</h2>
+			  {{- with .Params.lead }}
+			  <p class="lead pe-sm-5 me-sm-5">{{ . }}</p>
+			  {{ end }}
+				{{ if and .Params.cta (not (eq (len .Params.cta) 0)) }}
+				<div class="buttons">
+				{{ range .Params.cta }}
+						{{ if and .url .label }}
+								<a href="{{.url}}" class="btn {{ with .classes }}{{ . }}{{ end }} mt-4">{{ .label | safeHTML }}</a>
+						{{ end }}
+				{{ end }}
+				</div>
+				{{ end }}
+			  <div class="d-flex justify-content-start">
+			  	{{ with .Params.authors }}
+			  	{{- range . }}
+			  	{{ $author := $.Site.GetPage (printf "authors/%s/" .)}}
+			  	{{ $avatarimage := "" }}
+			  	{{- with $author.Resources.GetMatch "avatar" -}}
+		  			{{- $avatarimage = (.Fill "300x300").RelPermalink -}}
+		  		{{ end }}
+
+                <div class="author align-items-center">
+                                <img src="{{ $avatarimage }}" alt="{{ $author.Params.name }}" class="avatar shadow">
+                                <div class="name ps-2">
+                                  <span>{{ $author.Params.name }}</span>
+                                  <div class="stats">
+                                    <small> {{ T "posted_on"}} {{ $.Date | dateFormat "January 2, 2006" }}</small>
+                                  </div>
+                                </div>
+				</div>
+            	</div>
+            	<div class="d-flex justify-content-start mt-3">
+			  	{{ with $author.Params.profiles }}
+			  		{{ range $key, $val := . }}
+			  		<a href="{{ $val }}"><i class="fab fa-{{$key}} text-dark me-4 text-lg"></i></a>
+			  		{{ end }}
+			  	{{ end }}
+			  	{{ end }}
+			  	{{ end }}
+<!-- 			<a href="javascript:;"><i class="fab fa-facebook text-dark me-4 text-lg"></i></a>
+				<a href="javascript:;"><i class="fab fa-instagram text-dark me-4 text-lg"></i></a>
+				<a href="javascript:;"><i class="fab fa-twitter text-dark me-4 text-lg"></i></a>
+				<a href="javascript:;"><i class="fab fa-google-plus text-dark text-lg"></i></a> -->
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </header>

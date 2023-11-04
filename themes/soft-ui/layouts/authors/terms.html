@@ -1,0 +1,59 @@
+{{ define "bodyclasses" }}about-us authors-page authors-terms _default/authors-terms-html contentgrouptype-{{ .Data.Singular }} contentgroupname-{{ .Title | urlize }} {{ end }}
+{{ define "description" }}
+
+{{ end }}
+{{ define "main" }}
+  {{ partial "header.html" . }}
+
+<section class="py-5">
+  <div class="container">
+    <div class="row mt-lg-5 mt-3">
+      {{ range (sort (where .Data.Pages ".Params.options.unlisted" "!=" true) ".Params.name" "asc" ) }}
+        {{ if .Params.name }}
+      <div class="col-lg-6 mb-5">
+        <div class="card card-profile card-plain">
+          <div class="row">
+            <div class="col-lg-5">
+              <a href="{{ .Permalink }}">
+                <div class="position-relative">
+                  <div class="blur-shadow-image">
+                    {{- with .Resources.GetMatch "avatar" -}}
+                        {{- $avatar := .Fill "400x400" -}}
+                    <img class="w-100 rounded-3 shadow-lg" src="{{ $avatar.Permalink }}">
+                    {{ end }}
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="col-lg-6 ps-0 my-auto">
+              <div class="card-body text-left">
+                <div class="p-md-0 pt-3">
+                  <h5 class="font-weight-bolder mb-0"><a href="{{ .Permalink }}">{{ .Params.name }}</a></h5>
+                  {{ with .Params.subtitle }}
+                    <p class="text-uppercase text-sm font-weight-bold mb-2">{{ . }}</p>
+                  {{ end }}
+                </div>
+                {{ with .Params.lead }}
+                <p class="mb-4">{{ . }}</p>
+                {{ end }}
+                {{ with .Params.profiles }}
+                  {{ range $key, $val := . }}
+                  <a href="{{ $val }}" class="btn btn-icon btn-simple btn-lg mb-0 pe-3 ps-2 btn-{{ $key }}"><i class="fab fa-{{ $key }}"></i></a>
+                  {{ end }}
+                {{ end }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+<!-- END Teams w/ 4 cards w/ image on left & descriptio/social link on right -->
+
+
+{{ end }}
+{{ define "list-javascript" }}
+{{ end }}

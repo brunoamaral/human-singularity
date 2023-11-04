@@ -1,0 +1,7 @@
+
+<blockquote class="blockquote ps-2 blockquote-primary">
+  <p class="mb-3">
+  {{.Inner | markdownify }}
+  </p>
+  <footer class="blockquote-footer">{{.Get "footer" | safeHTML}}</footer>
+</blockquote>

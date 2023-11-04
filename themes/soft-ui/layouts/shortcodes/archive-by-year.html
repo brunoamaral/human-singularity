@@ -1,0 +1,13 @@
+{{$posts := (where (where .Site.RegularPages ".Params.options.unlisted" false) "Section" "!=" "instagram")}}
+{{ range $posts.GroupByPublishDate "2006"}}
+<h2 class="archive-year title" id="{{.Key | urlize}}">{{.Key}}</h2>
+		<ul class="year-of-posts">
+				{{ range sort .Pages "PublishDate" "desc" }}
+				<li>
+				<a href="{{.Permalink}}">
+				<strong>{{.Title}}</strong> <time datetime={{.PublishDate}}>{{.PublishDate.Format "January 2, 2006"}}</time>
+				</a>
+				</li>
+				{{end}}
+		</ul>
+{{end}}

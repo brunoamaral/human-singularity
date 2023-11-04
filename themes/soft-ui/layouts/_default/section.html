@@ -1,0 +1,61 @@
+{{ define "bodyclasses" }}section-list _default/section.html post-list post-list-html {{ end }}
+{{ define "bodyid"}}section{{end}}
+{{ define "data-attributes" }}
+	data-contentgrouptype="{{ .Section }}" data-contentgroupname="{{ .CurrentSection.Title }}" data-articletitle="{{ .Title }}"
+{{ end }}
+
+{{ define "description" }}
+	{{ partial "description.html" . }}
+{{ end }}
+{{ define "main" }}
+
+{{ partial "header.html" . }}
+
+	<div class="section">
+		<div class="container">
+			<a name="content"></a>
+			<section id="category-list" class="card-group">
+					<div class="row mt-7">
+					{{ $list := "none" }}
+						{{ if eq .Params.options.unlisted true }}
+							{{ $list = (where (where .Data.Pages ".Params.options.unlisted" true) "Section" "!=" "instagram") }}
+						{{ else }}
+							{{ $list = (where (where .Data.Pages ".Params.options.unlisted" false) "Section" "!=" "instagram") }}
+						{{ end }}
+
+						{{ with .Sections }}
+							{{ $stories := where . ".Params.options.unlisted" false }}
+							{{ range $stories }}
+								{{ .Scratch.Set "columns" (len $stories) }}
+								<div class="col-md-6 col-lg-4 mb-5">
+									{{ partial "card-background-tilt" . }}
+								</div>
+							{{ end }}                               
+						{{ end }}
+
+						{{ if or (eq .Section "story") (eq .Section "page") }}
+							{{ .Content }}
+						{{ end }}
+
+						{{ if not (or (eq .CurrentSection.Name (i18n "stories")) (eq .Section "page")) }}
+							{{ range (.Paginate $list 8).Pages }}
+							<div class="col-md-4 col-lg-3 mb-5">
+								{{ .Render "summary" }}
+							</div>
+							{{ end }}
+						{{ end }}
+
+						{{ if not (or (eq .CurrentSection.Name (i18n "stories")) (eq .Section "page")) }}
+							{{ partial "pagination.html" . }}
+						{{ end }}
+					</div>
+			</section>
+			<div class="separator separator-primary"></div>
+		</div>
+	</div>
+
+{{ end }}
+
+{{ define "list-javascript" }}
+	{{ partial "comments-js.html" . }}
+{{ end }}

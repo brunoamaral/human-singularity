@@ -1,0 +1,21 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+  {{ if eq (print (.GetPage $ref).File) $ref }}
+    {{ $page = (.GetPage $ref) }}
+  {{ end }}
+{{ end }}
+
+{{ with $page }}
+{{ $image := "" }}
+{{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+        <div class="card card-background move-on-hover mb-4">
+          <a href="{{ .Permalink }}">
+            <div class="full-background" style="background-image: url({{$image.RelPermalink}})"></div>
+            <div class="card-body pt-12">
+              <h4 class="text-white">{{.Title}}</h4>
+              <p>{{ .Summary | truncate 140 }}</p>
+            </div>
+          </a>
+        </div>
+{{ end }}

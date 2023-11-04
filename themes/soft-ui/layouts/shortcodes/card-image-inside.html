@@ -1,0 +1,67 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+	{{ if eq (print (.GetPage $ref).File) $ref }}
+		{{ $page = (.GetPage $ref) }}
+	{{ end }}
+{{ end }}
+
+
+
+{{ with $page }}
+	{{ $author := "" }}
+	{{ $avatarimage := ""}}
+	{{ with .Params.authors }}
+		{{ $author = $.Site.GetPage (printf "authors/%s/" (index . 0) )}}
+   {{ end }}
+	{{ $category := "" }}
+
+	{{ with ( .Params.categories ) }}
+		{{$category = .}}
+	{{ end }}
+
+	{{ if $author }}
+	{{- with $author.Resources.GetMatch "avatar" -}}
+		{{- $avatarimage = (.Fill "110x110").RelPermalink -}}
+	{{- end }}
+	{{ end }}
+
+
+	{{ $image := "" }}
+	{{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+
+	<div class="card shadow-lg mt-3">
+		<div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
+			<a href="{{ .Permalink }}" class="d-block">
+				<img src="{{ $image.RelPermalink }}" class="img-fluid border-radius-lg" alt="{{.Params.subtitle}}" loading="lazy">
+			</a>
+		</div>
+
+		<div class="card-body pt-3">
+			{{ with $category }}
+				<span class="text-gradient text-warning text-uppercase text-xs font-weight-bold my-2">{{ index $category 0 }}</span>
+			{{ end }}
+			<a href="{{ .Permalink }}" class="text-darker card-title h5 d-block">
+				{{ .Title }}
+			</a>
+			<p class="card-description mb-4">
+				{{ .Params.description | plainify | truncate 140 }}
+			</p>
+
+			{{ if $author }}
+			<div class="author align-items-center">
+				<img src="{{ $avatarimage }}" alt="" class="avatar shadow" loading="lazy">
+				<div class="name ps-3">
+					<span>{{ if gt (len $author.Params.name) 0 }}
+						{{ $author.Params.name }}
+					{{ end }}</span>
+					<div class="stats">
+						<small>{{ T "posted_on" }} {{ .Date | dateFormat "02 January"}}</small>
+					</div>
+				</div>
+			</div>
+			{{ end }}
+
+		</div>
+	</div>
+{{ end }}

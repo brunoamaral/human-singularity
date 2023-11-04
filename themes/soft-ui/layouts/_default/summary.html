@@ -1,0 +1,44 @@
+		  <div class="card">
+			<div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
+			  <a href="{{ .Permalink }}" class="d-block blur-shadow-image">
+			  	{{ $image := ""}}
+			  	{{ with .Resources.GetMatch "header" }}
+				  {{ $image = (.Fill "268x179").Permalink }}
+			  	{{ else }}
+			  		{{ $image = .Site.Params.defaultImage }}
+			  	{{ end }}
+				<img src="{{ $image }}" class="img-fluid border-radius-md" loading="lazy" alt="{{.Params.subtitle}}" >
+			  </a>
+			</div>
+			<div class="card-body">
+				{{ if isset .Params "categories" }}
+					{{ range $index, $category := .Params.categories }}
+					<span class="text-gradient text-primary text-uppercase text-xs font-weight-bold {{ $category | urlize }} ">{{ $category }}</span>
+					{{ end }}
+				{{ end }}
+
+			  <a href="{{.Permalink}}" class="card-title mt-3 h5 d-block text-darker">
+				{{ .Title }}
+			  </a>
+			  <p class="card-description mb-4">
+			  	{{ .Summary | truncate 155}}
+			  </p>
+			  {{ with .Params.authors }}
+			  {{- range . }}
+			  {{ $author := $.Site.GetPage (printf "authors/%s/" .)}}
+			  <div class="author align-items-center">
+			  	{{- with $author.Resources.GetMatch "avatar" -}}
+			  	{{- $avatar := .Fill "48x48" -}}
+				<img src="{{ $avatar.Permalink }}" alt="{{ $author.Params.name }}" class="avatar shadow" loading="lazy">
+				{{ end }}
+				<div class="name ps-2">
+				  <span>{{ $author.Params.name }}</span>
+				  <div class="stats">
+					<small>{{ T "posted_on"}} {{ $.Date | dateFormat "2 January, 2006"}}</small>
+				  </div>
+				</div>
+			  </div>
+			  {{ end }}
+			  {{ end }}
+			</div>
+		  </div>

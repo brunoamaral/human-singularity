@@ -1,0 +1,49 @@
+{{ define "bodyclasses" }}terms{{ end }}
+
+{{ define "data-attributes" }}
+	data-contentgrouptype="terms" data-contentgroupname="the-stories" data-articletitle="subhomepage"
+{{ end }}
+
+{{ define "description" }}
+	{{ partial "description.html" . }}
+{{ end }}
+
+{{ define "title" }}
+	{{ .Page.Title}} oi?
+{{ end }}
+
+{{ define "main" }}
+	{{ partial "header-2.html" . }}
+	<section>
+		<div class="container">
+					<div id="taxonomy {{ .Data.Plural }}">
+						<article class="row">
+							<div class="col-lg-12 ms-auto me-auto">
+								<div class="row">
+							{{ range .Data.Terms.Alphabetical }}
+							<div class="col-lg-4 mb-lg-5 mb-4">
+							{{ $image := "" }}
+							{{- with .Page.Resources.GetMatch "header" }} 
+							{{ $image = .Permalink }}{{ end }} 
+							        <div class="card card-background move-on-hover">
+							          <a href="{{ .Page.Permalink }}">
+							            <div class="full-background" style="background-image: url({{$image}})"></div>
+							            <div class="card-body pt-12">
+							              <h4 class="text-white">{{.Page.Title}}</h4>
+							              <p>{{ .Page.Summary | truncate 140 }}</p>
+							            </div>
+							          </a>
+							        </div>
+							    </div>
+							{{ end }}
+						</div>
+						</div>
+						</article>
+					</div>
+
+			<div class="separator separator-primary"></div>
+		</div>
+	</section>
+  </div>
+
+{{ end }}

@@ -1,0 +1,168 @@
+{{ define "bodyclasses" }} blog-single-article blog-post article single _default/single.html{{ end }}
+
+{{ define "data-attributes" }}
+	data-contentgrouptype="{{ .Section }}" data-contentgroupname="{{ .CurrentSection.Title }}" data-articletitle="{{ .Title }}"
+{{ end }}
+
+{{ define "description" }}
+	{{ partial "description.html" . }}
+{{ end }}
+
+{{ define "head" }}
+	{{ if ne .Params.disable_comments true }}
+	<link rel="preload" href="https://commento.brunoamaral.eu/css/commento.css" as="style">
+	{{ end }}
+{{ end }}
+
+{{ define "list-javascript" }}
+	{{ if ne .Params.disable_comments true }}
+		{{ partial "comments-js.html" . }}
+		<script defer src="https://commento.brunoamaral.eu/js/commento.js" data-no-fonts="true"></script>
+	{{ end }}
+	{{ if .HasShortcode "youtube" }}
+		<!-- Plyr for better html <video> and <audio> -->
+		{{- $plyr_js := resources.Get "/js/plyr/plyr.min.js" -}} 
+		<script src="{{- $plyr_js.Permalink }}"></script>
+		<script type="text/javascript" defer="true">
+			const players = Plyr.setup('.player', {blankVideo: '/plyr/blank.mp4', iconUrl: '/plyr/plyr.svg'});
+		</script>
+	{{ end }}
+{{ end }}
+
+
+{{ define "main" }}
+  <!-- -------- START HEADER   ------- -->
+{{ partial "header.html" . }}
+  <!-- -------- END HEADER   ------- -->
+
+  <section class="py-0 mt-0 py-md-4 py-lg-4 mt-lg-5">
+	<div class="container">
+	  <div class="row">
+		<div class="col-lg-8 ms-auto me-auto">
+		  {{ .Content }}
+		</div>
+	  </div>
+	</div>
+  </section>
+  <!-- END Blogs w/ 3 images & quote & text -->
+
+<!-- article footer -->
+
+<section class="py-7">
+  <div class="container">
+	<div class="row">
+	  <div class="col-lg-8 ms-auto me-auto">
+		  <div class="row">
+				{{ with .Params.tags }}
+			  <div class="col-md-6 my-auto">
+					{{ $lenght := sub (len .) 1}}
+					 <div class=""> 
+						{{ range $index, $tag := . }}
+						<a class="badge badge-sm badge-primary" href="{{ "tags" | absLangURL }}/{{ . | urlize }}">{{ . }}</a>{{- if lt $index $lenght -}}{{ end }}
+						{{ end }}
+					 </div>
+			  </div>
+				{{ end }}
+				{{- if (ne $.Params.options.hideShareButtons true | and (ne .Section "instagram")) -}}
+			  <div class="col-md-6">
+			   <a href="https://twitter.com/intent/tweet/?text={{ .Title }} &amp;url={{ .Permalink }}" class="btn btn-twitter btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+				<i class="fab fa-twitter "></i> 
+			   </a>
+			   <a href="https://facebook.com/sharer/sharer.php?u={{ .Permalink }}" class="btn-facebook btn btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+				<i class="fab fa-facebook-square "></i>
+			  </a>
+				<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ .Permalink }}&amp;title={{ .Title }}&amp;summary={{ .Title }}&amp;source={{ .Permalink }}" class="btn-linkedin btn btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+					<i class="fab fa-linkedin "></i>
+				</a>
+				<a href="mailto:?subject={{ .Title }}&amp;body={{ .Permalink }}" class="btn-email btn btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+					<i class="fas fa-envelope"></i>
+				</a>
+<!-- 	 			<a href="https://reddit.com/submit/?url={{ .Permalink }}&amp;resubmit=true&amp;title={{ .Title }}" class="btn-reddit btn btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+					<i class="fab fa-reddit "></i>
+				</a>
+				<a href="whatsapp://send?text={{ .Title }}%20{{ .Permalink }}" class="btn-whatsapp btn btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+					<i class="fab fa-whatsapp "></i>
+				</a>
+
+				<a href="https://telegram.me/share/url?text={{ .Title }}&amp;url={{ .Permalink }}" class="btn-telegram btn btn-round mb-0 mx-1 mt-md-0 mt-4 float-md-right">
+					<i class="fab fa-telegram "></i>
+				</a>
+ -->
+			  </div>
+				{{end}}
+		  </div>
+
+		  <hr class="dark horizontal">
+			{{ with .Params.authors }}
+		  <div id="author" class="mt-7">
+				{{- range . }}
+				{{ $author := $.Site.GetPage (printf "authors/%s/" .)}}
+			  <div class="d-flex">
+				<div>
+				  <a href="{{ $author.Permalink }}">
+					<div class="position-relative">
+					  <div class="blur-shadow-avatar">
+						{{ $avatarimage := ""}}
+						{{- with $author.Resources.GetMatch "avatar" -}}
+							{{- $avatarimage = (.Fill "110x110").RelPermalink -}}
+						{{- end }}
+						<img class="avatar avatar-xxl rounded-circle" src="{{- $avatarimage -}}">
+					  </div>
+					</div>
+				  </a>
+				</div>
+				<div class="ms-4 my-auto">
+				  <h5>{{ $author.Params.name }}</h5>
+				  <p class="text-sm mb-0">{{ $author.Content | truncate 140 }}</p>
+				</div>
+				<div class="my-auto d-md-block d-none ms-2">
+					<a class="btn btn-dark pull-right btn-round mb-0" href="{{$author.Permalink}}">{{ T "follow" }}</a>
+				</div>
+			</div>
+			<div class="my-auto d-md-none d-block ms-2">
+				<a href="{{ $author.Permalink }}" class="btn btn-dark btn-round mt-3">{{ T "follow" }}</a>
+			</div>
+			{{ end }}
+		  </div>
+			{{ end }}
+
+
+		  {{ if ne .Params.disable_comments true }}
+			<h3 class="title text-center py-5"><a href="{{ .Permalink }}#commento"></a></h3>
+		  <div class="d-flex col-md-12">
+				<span id="comment" class="anchor"></span>
+				<div id="commento"></div>
+		  </div>
+		  {{ end }}
+
+	  </div>
+	</div>
+  </div>
+</section>
+<!-- END article footer -->
+<!-- start section listing -->
+ {{ if eq .Section "story" }}
+  <section class="py-7">
+	<div class="container">
+	  <div class="row">
+		<div class="col-9 text-center mx-auto">
+		  <h3 class="mb-5"> {{ T "select_one_of_the_pages_in_this_story" }} {{ .CurrentSection.Title }}</h3>
+		  {{ with .CurrentSection.Params.subtitle }}
+		  <h4 class="mt-n3 mb-5 text-muted">{{ . }}</h4>
+		  {{ end }}
+		</div>
+		{{ $sectionPages := (where $.CurrentSection.Pages ".Params.options.unlisted" false) }} 
+		{{ range ( $sectionPages) }}
+		<div class="col-md-4">
+			{{ .Render "summary" }}
+		</div>
+		{{ end }}
+	  </div>
+	</div>
+  </section>
+{{ end }}
+<!-- end section listing -->
+	{{ partial "pagination.html" }}
+
+{{ end }}
+

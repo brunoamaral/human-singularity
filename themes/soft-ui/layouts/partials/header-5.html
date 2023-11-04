@@ -1,0 +1,69 @@
+{{ $header := ""}}
+{{- with .Resources.GetMatch "header" -}}
+	{{- if eq .MediaType.SubType "gif" -}}
+		{{- $header = .RelPermalink -}}
+	{{- else }}
+		{{- $image := .Resize "1920x" -}}
+		{{- $header = $image.RelPermalink -}}
+	{{- end }}
+{{- else }}
+	{{- $header = $.Site.Params.headerPhoto -}}
+{{- end -}}
+{{ $titlecolor := "primary"	}}
+{{ with .Params.options.headerTitleColor  }}
+	{{$titlecolor = $.Params.options.headerTitleColor }}
+{{ end }}
+
+{{- $headerImages := ($.Page.Resources.Match "headerImages*") }}
+
+<!-- -------- START HEADER 5 w/ text and illustration ------- -->
+<header>
+  <div class="page-header min-vh-{{- .Params.options.headerHeight | default "75" -}} pt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 my-auto">
+          <h1 class="text-gradient text-{{$titlecolor}} mb-0">{{ .Title }}</h1>
+					<h1 class="mb-4">{{- with .Params.subtitle }}{{ . }}{{ end }}</h1>
+					{{- with .Params.lead }}
+					<p class="lead pe-sm-5 me-sm-5">{{ . }}</p>
+					{{ end }}
+          <div class="buttons">
+						{{ with .Params.cta }}
+						<div class="buttons">
+								{{ range . }}
+								<a href="{{.url}}" class="btn {{ with .classes }} {{.}} {{else}} btn text-warning shadow-none mt-4 {{ end }} mt-4">{{ .label | safeHTML }}</a>
+								{{ end }}
+						</div>
+					{{ end }}
+          </div>
+        </div>
+        <div class="col-lg-8 ps-5 pe-0 mt-5 py-5">
+          <div class="row">
+            <div class="col-lg-3 col-6">
+							{{ with (index $headerImages 0).Permalink }}<img class="w-100 border-radius-lg shadow mt-0 mt-lg-5" src="{{ (index $headerImages 0).Permalink }}" alt="">{{end}}
+            </div>
+            <div class="col-lg-3 col-6">
+							{{ with (index $headerImages 1).Permalink }}
+              <img class="w-100 border-radius-lg shadow" src="{{.}}" alt="">{{end}}
+							{{ with (index $headerImages 2).Permalink }}
+              <img class="w-100 border-radius-lg shadow mt-4" src="{{ . }}" alt="">{{end}}
+            </div>
+            <div class="col-lg-3 col-6">
+							{{ with (index $headerImages 3).Permalink }}
+              <img class="w-100 border-radius-lg shadow mt-0 mt-lg-5" src="{{.}}" alt="">{{end}}
+							{{ with (index $headerImages 4).Permalink }}
+              <img class="w-100 border-radius-lg shadow mt-4" src="{{.}}" alt="">{{end}}
+            </div>
+            <div class="col-lg-3 col-6">
+							{{ with (index $headerImages 5).Permalink }}
+              <img class="w-100 border-radius-lg shadow mt-3" src="{{.}}" alt="">{{end}}
+							{{ with (index $headerImages 6).Permalink }}
+							<img class="w-100 border-radius-lg shadow mt-4" src="{{.}}" alt="">{{end}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- -------- END HEADER 5 w/ text and illustration ------- -->

@@ -1,0 +1,70 @@
+<!-- close row and lg-8 container -->
+</div>
+</div>
+{{ $slides := ( .Page.Resources.Match (printf "%s*" (.Get "folder"))) }}
+{{ with $slides }}
+		{{ with $.Get "title" }}
+				<h4>{{ . }}</h4>
+		{{ end }}
+<section class="py-7 position-relative">
+		<div id="carousel-testimonials" class="carousel slide carousel-team">
+			<div class="carousel-inner">
+
+			{{ range $key, $value := $slides }}
+				{{ $active := "" }}
+				{{ if eq $key 0 }}
+					{{ $active = "active" }}
+				{{ end }}
+			<div class="carousel-item {{ $active }}">
+				<div class="container">
+				<div class="row align-items-center">
+					<div class="col-md-5 me-lg-auto position-relative">
+					<h6 class="opacity-7 text-uppercase font-weight-bolder text-sm fadeIn4 fadeInBottom">{{ .Params.pretitle }}</h6>
+					<h1 class="text-dark display-3 font-weight-bolder fadeIn2 fadeInBottom">{{ .Name }}</h1>
+					<p class="my-4 lead text-dark fadeIn2 fadeInBottom">
+						{{ .Params.description }}
+					</p>
+					</div>
+					<div class="col-md-5 ms-lg-auto">
+					<div class="p-3">
+						<img class="w-100 border-radius-md max-height-600 fadeIn2 fadeInBottom" src="{{ .RelPermalink }}" alt="{{ .Name }}">
+					</div>
+					</div>
+				</div>
+				</div>
+			</div>
+			{{ end }}
+			</div>
+
+			<div class="position-relative mt-n6">
+			<a class="carousel-control-prev text-dark position-absolute bottom-0 start-0" href="#carousel-testimonials" role="button" data-bs-slide="prev">
+				<i class="fas fa-2x fa-chevron-left position-absolute start-0 ms-3"></i>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next text-dark position-absolute bottom-0 start-0 ms-4" href="#carousel-testimonials" role="button" data-bs-slide="next">
+				<i class="fas fa-2x fa-chevron-right"></i>
+				<span class="sr-only">Next</span>
+			</a>
+			</div>
+		</div>
+	
+
+		<div class="row mt-10">
+			{{ range $key, $value := $slides }}
+			{{ $active := "" }}
+			{{ if eq $key 0 }}
+				{{ $active = "active" }}
+			{{ end }}
+			<div class="col-lg-3 col-6 mb-lg-0 mb-4">
+			<a href="javascript:;" class="text-lg text-gradient text-primary h3 ps-3" data-bs-target="#carousel-testimonials" data-bs-slide-to="{{ $key }}" class="{{ $active }}">
+				<span>{{ add $key 1 }}</span>
+				<span class="ms-2">{{ .Name }}</span>
+			</a>
+			</div>
+			{{ end }}
+		</div>
+</section>
+{{ end }}
+<!-- reopen row and col-lg8 -->
+<div class="row">
+	<div class="col-lg-8 ms-auto me-auto">

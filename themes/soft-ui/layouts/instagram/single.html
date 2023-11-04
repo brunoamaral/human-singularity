@@ -1,0 +1,32 @@
+{{ define "bodyclasses" }}single instagram single.html contentgrouptype-instagrams contentgroupname-{{ .RelPermalink }}{{ end }}
+
+{{ define "bodyid" }}instagram{{ end }}
+
+{{ define "main" }}
+{{ $headerImage := ""}}
+{{ with .Resources.GetMatch "header" }}
+	{{ $headerImage = .RelPermalink }}
+{{ end }}
+
+<div class="page-header min-vh-100" style="background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url({{- $headerImage -}}); background-size:cover;">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-lg-6 col-10 mx-auto mt-7">
+                <div class="card card-plain card-blog mt-4">
+                    <div class="card-image border-radius-lg position-relative">
+                            <div class="blur-shadow-image">
+                                <img class="img border-radius-lg" src="{{ $headerImage }}" alt="{{ .Title }}">
+                            </div>
+                        <div class="colored-shadow" style="background-image: url('{{ $headerImage }}');"></div>
+                    </div>
+                    <div class="card-body px-0">
+                        <p class="text-white">
+                            {{ .Summary }}
+                        </p>
+                    </div>
+                </div>
+        </div>
+      </div>
+    </div>
+</div>
+{{end}}

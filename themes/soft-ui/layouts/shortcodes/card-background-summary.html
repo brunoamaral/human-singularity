@@ -1,0 +1,41 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+  {{ if eq (print (.GetPage $ref).File) $ref }}
+    {{ $page = (.GetPage $ref) }}
+  {{ end }}
+{{ end }}
+
+{{ with $page }}
+{{ $image := "" }}
+{{- with .Resources.GetMatch "header" }}{{ $image = (.Fill "800x533").Permalink | relURL }}{{ end }}
+
+<div class="row {{ with ($.Get "rowclasses") }}{{ . }}{{ end }}">
+          <div class="col-lg-6 justify-content-center d-flex flex-column {{ with ($.Get "alignright") }}order-last{{ end }}">
+            <div class="card">
+              <div class="d-block blur-shadow-image">
+                <a href="{{.Permalink}}"><img src="{{ $image | safeHTML }}" alt="img-blur-shadow-blog-2" class="img-fluid border-radius-lg" loading="lazy"></a>
+              </div>
+            <div class="colored-shadow" style="background-image:url('{{- $image -}}');"></div> 
+            </div>
+          </div>
+          <div class="col-lg-6 justify-content-center d-flex flex-column pl-lg-5 pt-lg-0 pt-3">
+            <div class="h6 category text-primary mt-3">{{index .Params.categories 0}}</div>
+            <h3 class="card-title">
+              <a href="{{.Permalink}}" class="text-dark">{{ .Title }}</a>
+            </h3>
+            <p class="card-description">
+              {{ .Summary }} <a href="{{.Permalink}}" class="text-darker icon-move-right text-sm"> <br> {{ T "read_more"}}
+                <i class="fas fa-arrow-right text-xs ms-1" aria-hidden="true"></i>
+              </a>
+            </p>
+            {{$author := ""}}
+            {{ with (index (.Params.authors ) 0) }}
+                {{ $author = $.Site.GetPage (printf "authors/%s/" .) }}
+            {{ end }}
+            <p class="author">
+              by <a href="{{.Permalink}}" class="ms-1"><span class="font-weight-bold text-primary"> {{ $author.Params.name }}</span></a>, {{ .PublishDate | dateFormat "02 Jan 2006" }}
+            </p>
+          </div>
+</div>
+{{ end }}

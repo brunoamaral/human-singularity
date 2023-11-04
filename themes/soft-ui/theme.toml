@@ -1,0 +1,12 @@
+name = "Soft UI Pro"
+license = "N/A"
+licenselink = ""
+description = "A port of Creative Tim's Soft UI theme for Hugo"
+tags = ["blog", "bootstrap"]
+features = ["blog"]
+min_version = 0.80
+
+[author]
+	name = "Bruno Amaral"
+	homepage = "http://brunoamaral.eu/"
+

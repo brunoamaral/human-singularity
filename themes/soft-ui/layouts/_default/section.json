@@ -1,0 +1,20 @@
+[ {{ $pages := where $.Data.Pages ".Params.options.unlisted" "=" false }} 
+{{ $pages = (sort $pages "Date").Reverse }}
+
+{{ range $index, $page := $pages }}
+  {{ if ne $page.Type "json" }}
+    {{ if and $index (gt $index 0) }},{{ end }}
+    {
+      "date":"{{ $page.Date }}",
+      "simpledate": "{{$page.Date | dateFormat "2 Jan 2006" }}",
+      "uri": "{{ $page.Permalink | htmlEscape }}",
+      "title": {{ $page.Title | jsonify }},
+			"tags": {{ $page.Params.tags | jsonify }},
+			"category": {{ $page.Params.categories | jsonify }},
+			"description": "{{ htmlEscape .Description | default "No description available." | truncate 120 }}",
+      "content": {{$page.Plain | jsonify}},
+      "image": "{{- with .Resources.GetMatch "header" }}{{- $image := .Fill "300x300" }}https://brunoamaral.eu{{ $image.RelPermalink }}{{ else }}https://brunoamaral.eu/images/fractal_thumb.jpg{{ end }}"
+    }
+  {{ end }}
+{{ end }}
+]

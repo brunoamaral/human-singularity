@@ -1,0 +1,49 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+	{{ if eq (print (.GetPage $ref).File) $ref }}
+		{{ $page = (.GetPage $ref) }}
+	{{ end }}
+{{ end }}
+
+
+
+{{ with $page }}
+	{{ $author := "" }}
+	{{ $avatarimage := ""}}
+	{{ with .Params.authors }}
+		{{ $author = $.Site.GetPage (printf "authors/%s/" (index . 0) )}}
+   {{ end }}
+   {{ $category := "" }}
+	{{ with .Params.categories }}
+	{{ $category = (index .Params.categories 0 ) }}
+	{{ end }}
+
+	{{ if $author }}
+	{{- with $author.Resources.GetMatch "avatar" -}}
+	{{- $avatarimage = (.Fill "110x110").RelPermalink -}}
+{{- end }}
+	{{ end }}
+	{{ $image := "" }}
+	{{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+				<div class="card card-plain card-blog mt-4">
+					<div class="card-image border-radius-lg position-relative">
+						<a href="{{ .Permalink }}">
+							<div class="blur-shadow-image">
+								<img class="img border-radius-lg move-on-hover" src="{{ $image.Permalink }}">
+							</div>
+						<div class="colored-shadow" style="background-image: url('{{ $image.Permalink }}');"></div></a>
+					</div>
+					<div class="card-body px-0">
+						<h5>
+							<a href="{{ .Permalink }}" class="text-dark font-weight-bold">{{ .Title }}</a>
+						</h5>
+						<p>
+							{{ .Summary | truncate 140 }}
+						</p>
+						<a href="{{ .Permalink }}" class="text-info icon-move-right">{{ T "read_more" }}
+							<i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
+						</a>
+					</div>
+				</div>
+{{ end }}

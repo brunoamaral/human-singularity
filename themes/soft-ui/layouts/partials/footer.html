@@ -1,0 +1,92 @@
+<footer class="footer pt-5 mt-5">
+	<hr class="horizontal dark mb-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-3 mb-4">
+				<div>
+					<div class="h6 text-gradient text-primary font-weight-bolder">{{ .Site.Title }}</div>
+				</div>
+				<div>
+					<div class="h6 mt-3 mb-2 opacity-8">{{ T "social" | title}}</div>
+					<ul class="d-flex flex-row ms-n3 nav">
+						{{ $author := .Site.Params.profiles }}
+
+						{{ with $author }}
+						{{ range $key, $val := . }}
+
+						<li class="nav-item">
+						<a href="{{ $val }}" rel="me" class=" nav-link pe-1" aria-label="{{$key}}"><i class="fab fa-{{ $key }} text-lg opacity-8" title="{{$key}}"></i></a>
+						</li>
+						{{ end }}
+					  	{{ end }}
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-6 col-6 mb-4">
+				<div>
+					<div class="text-gradient text-primary text-sm h6">{{ T "explore" | title }}</div>
+					<ul class="flex-column ms-n3 nav">
+						{{- range .Site.Menus.explore -}}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ .URL }}" target="">
+								{{ .Name | safeHTML }}
+							</a>
+						</li>
+						{{ end }}
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-6 col-6 mb-4">
+				<div>
+					<div class="text-gradient text-primary text-sm h6">{{ T "resources" | title }}</div>
+					<ul class="flex-column ms-n3 nav">
+						{{- range .Site.Menus.resources -}}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ .URL }}" target="">
+								{{ .Name | safeHTML }}
+							</a>
+						</li>
+						{{ end }}
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-6 col-6 mb-4">
+				<div>
+					<div class="text-gradient text-primary text-sm h6">{{ T "legal" | title }}</div>
+					<ul class="flex-column ms-n3 nav">
+						{{- range .Site.Menus.legal -}}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ .URL }}" target="">
+								{{ .Name | safeHTML }}
+							</a>
+						</li>
+						{{ end }}
+					</ul>
+				</div>
+			</div>
+			{{with .Site.Menus.follow}} 
+			<div class="col-md-2 col-sm-6 col-6 mb-4 me-auto">
+				<div>
+					<div class="text-gradient text-primary text-sm h6">{{ T "follow" | title }}</div>
+					<ul class="flex-column ms-n3 nav"> 
+						{{- range .Site.Menus.follow -}}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ .URL }}" target="">
+								{{ .Name | safeHTML }}
+							</a>
+						</li>
+						{{ end }}
+					</ul>
+				</div>
+			</div>
+			{{ end }}
+			<div class="col-12">
+				<div class="text-center">
+					<p class="my-4 text-sm">
+						Copyright &copy; {{ now.Format "2006" }}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,35 @@
+<!-- -------- START FOOTER 7 w/ DARK BACKGROUND AND 3 COLUMNS ------- -->
+<footer class="footer py-5 my-0 bg-gradient-dark position-relative overflow-hidden">
+  <img src="/img/waves-white.svg" alt="pattern-lines" class="position-absolute start-0 top-0 w-100 opacity-6">
+  <div class="container position-relative">
+    <div class="row">
+      <!-- Dynamically generated company links -->
+      <div class="col-lg-4 me-auto my-auto text-lg-start text-center">
+        <h6 class="text-white font-weight-bolder text-uppercase mb-2">{{ .Site.Title }}</h6>
+        <p class="text-white">
+          Copyright © {{ now.Format "2006" }} {{ .Site.Title }}.
+        </p>
+      </div>
+
+      <!-- Dynamically generated menu links -->
+      {{ range $section, $menu := .Site.Menus }}
+        <div class="col-lg-2 col-sm-4 col-12 ms-md-auto text-lg-start text-center mb-sm-0 mb-4">
+          <div>
+            <h6 class="text-white text-sm mb-1">{{ T $section | title }}</h6>
+            <ul class="flex-column ms-lg-n3 nav">
+              {{ range $menu }}
+                <li class="nav-item">
+                  <a class="nav-link text-white opacity-8 text-sm" href="{{ .URL }}">
+                    {{ .Name | safeHTML }}
+                  </a>
+                </li>
+              {{ end }}
+            </ul>
+          </div>
+        </div>
+      {{ end }}
+
+    </div>
+  </div>
+</footer>
+<!-- -------- END FOOTER 7 w/ DARK BACKGROUND AND 3 COLUMNS ------- -->

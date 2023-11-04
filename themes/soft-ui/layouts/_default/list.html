@@ -1,0 +1,40 @@
+{{ define "bodyclasses" }}post-list _default/post-list-html {{ end }}
+
+{{ define "data-attributes" }}
+	data-contentgrouptype="{{ .Data.Singular }}" 
+	data-contentgroupname="{{ .Title }}"
+{{ end }}
+
+{{ define "description" }}
+
+{{ end }}
+
+{{ define "main" }}
+
+	{{ partial "header.html" . }}
+		<div class="container">
+			<a name="content"></a>
+			<section id="category-list" class="card-group">
+					<div class="row">
+						<div class="col-lg-12">{{ .Content }}</div>
+					</div>
+					<div class="row">
+						{{ if eq .Data.Singular "tag" }}
+								{{ range (.Paginate (where .Data.Pages ".Params.options.unlisted" false) 9).Pages }}
+									<div class="col-lg-4">{{ .Render "summary" }}</div>
+								{{ end }}
+							{{ else }}
+								{{ range (.Paginate (where (where .Data.Pages "Section" "!=" "instagram") ".Params.options.unlisted" false) 9).Pages }}
+									<div class="col-lg-4">{{ .Render "summary" }}</div>
+								{{ end }}
+						{{ end }}
+						{{ partial "pagination.html" . }}
+					</div>
+			</section>
+			<div class="separator separator-primary"></div>
+		</div>
+{{ end }}
+
+{{ define "list-javascript" }}
+	{{ partial "comments-js.html" . }}
+{{ end }}

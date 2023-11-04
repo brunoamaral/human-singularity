@@ -1,0 +1,9 @@
+{{ if not (eq .Params.options.header nil ) }}
+  {{ if eq .Params.options.header "full" }}
+    {{ partial "header-1.html" . }}
+  {{ else }}
+  {{ partial (printf "%s.html" .Params.options.header ) . }}
+  {{end}}
+{{ else }}
+  {{ partial "header-1.html" . }}
+{{end }}

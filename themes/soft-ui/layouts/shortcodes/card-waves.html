@@ -1,0 +1,61 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+{{ if eq (print (.GetPage $ref).File) $ref }}
+{{ $page = (.GetPage $ref) }}
+{{ end }}
+{{ end }}
+
+{{ with $page }}
+{{ $image := "" }}
+{{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+
+<div class="card">
+		<a href="{{.Permalink}}"><img class="card-img-top" src="{{ $image.RelPermalink }}"></a>
+		<div class="position-relative overflow-hidden" style="height:50px;margin-top:-50px;">
+			<div class="position-absolute w-100 top-0 z-index-1">
+					<svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+						<defs>
+							<path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+						</defs>
+						<g class="moving-waves">
+							<use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+							<use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+							<use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+							<use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+							<use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+							<use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+						</g>
+					</svg>
+				</div>
+		</div>
+		<div class="card-body">
+			<h4>{{ .Title }}</h4>
+			<p>
+				{{.Summary | truncate 140 }}
+			</p>
+			{{ with .Params.authors }}
+			{{- range . }}
+			{{ $author := $.Site.GetPage (printf "authors/%s/" .)}}
+			<div class="author align-items-center">
+				{{ $avatarimage := ""}}
+				{{- with $author.Resources.GetMatch "avatar" -}}
+					{{- $avatarimage = (.Fill "110x110").RelPermalink -}}
+				{{- end }}
+			              <img src="{{ $avatarimage }}" alt="{{ $author.Params.name}}" class="avatar shadow">
+			              <div class="name ps-3">
+			                <span>{{ $author.Params.name}}</span>
+			                <div class="stats">
+			                  <small>{{ T "posted_on" }} 28 February</small>
+			                </div>
+			              </div>
+			            </div>
+			            {{ end }}
+			            {{ end }}
+			<a href="{{ .Permalink }}" class="text-primary icon-move-right">{{ T "read_omre" }}
+				<i class="fas fa-arrow-right text-xs ms-1" aria-hidden="true"></i>
+			</a>
+		</div>
+</div>
+
+{{ end }}

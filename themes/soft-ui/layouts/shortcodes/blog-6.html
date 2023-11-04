@@ -1,0 +1,58 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+	{{ if eq (print (.GetPage $ref).File) $ref }}
+		{{ $page = (.GetPage $ref) }}
+	{{ end }}
+{{ end }}
+
+{{ with $page }}
+	{{ $author := "" }}
+	{{ $avatarimage := ""}}
+	{{ with .Params.authors }}
+	 {{ $author = $.Site.GetPage (printf "authors/%s/" (index . 0) )}}
+	{{ else }}
+		{{ $author = $.Site.GetPage "authors/bruno-amaral/" }}
+	{{ end }}
+
+	{{ $category := "" }}
+	{{ with .Params.categories }}
+		{{ $category = (index . 0 ) }}
+	{{ end }}
+
+
+
+	{{- with $author.Resources.GetMatch "avatar" -}}
+			{{- $avatarimage = (.Fill "110x110").RelPermalink -}}
+	{{- end }}
+
+	{{ $image := "" }}
+	{{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+
+		<div class="text-center">
+				<div class="card card-blog card-plain">
+						<div class="position-relative">
+								<a class="d-block blur-shadow-image">
+										<img src="{{ $image.RelPermalink }}" alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+								</a>
+						</div>
+						<div class="card-body px-0 pt-4">
+							{{ if $category }}
+								{{ if gt (len $category) 0 }}
+								<p class="text-gradient text-primary text-gradient font-weight-bold text-sm text-uppercase">{{ $category }}</p>
+								{{ end }}
+							{{ end }}
+								<a href="{{ .Permalink }}">
+										<h4>
+												{{ .Title }}
+										</h4>
+								</a>
+								<p>
+										{{ .Summary | truncate 280 | safeHTML }}
+								</p>
+								<a href="{{ .Permalink }}" class="btn bg-gradient-primary mt-3">{{ with ($.Get "cta") }} {{ .}} {{ else }} {{ T "read_more" }}	{{end}} </a>
+						</div>
+				</div>
+		</div>
+
+{{ end }}

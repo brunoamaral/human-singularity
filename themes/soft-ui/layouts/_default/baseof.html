@@ -1,0 +1,507 @@
+<!--
+=========================================================
+* Soft UI Design System PRO - v1.0.3
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-design-system-pro
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+{{- $siteLogo := printf "%s%s" $.Site.BaseURL $.Site.Params.logo -}}
+{{- $author := .Site.GetPage (printf .Site.Params.defaultAuthor ) -}}
+{{- with .Params.authors -}}
+	{{ $ref := (printf "authors/%s" (index . 0)) }}
+	{{ $author = ($.Site.GetPage (printf $ref)) }}
+{{- end -}}
+<!DOCTYPE html>
+<html lang="{{- .Lang -}}">
+
+<head>
+	<meta charset="utf-8" />
+	{{- if eq $.Params.options.unlisted true -}}
+	<meta name="robots" content="noindex, nofollow">
+	{{- end -}}
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
+	<link rel="icon" type="image/png" href="/img/favicon.png">
+	{{- if .IsHome -}}
+	<title>{{- .Site.Title -}}</title>
+	{{- else -}}
+	<title>{{- with .Title -}}{{- . -}}{{- end -}}</title>
+	{{- end -}}
+	{{- hugo.Generator -}}	
+	<!--     Fonts and icons     -->
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+
+	<!-- Nucleo Icons -->
+	{{ $nucleoicons := resources.Get "css/nucleo-icons.css" }}
+	{{ $nucleosvg := resources.Get "css/nucleo-svg.css" }}
+	{{ $nucleo := slice $nucleoicons $nucleosvg | resources.Concat "css/nucleo.css" }}
+	<link rel="stylesheet" href="{{ $nucleo.Permalink }}" crossorigin="anonymous" />
+	<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+	<!-- Font Awesome Icons -->
+	<script src="https://kit.fontawesome.com/16e8434146.js" crossorigin="anonymous"></script>
+	<!-- CSS Files -->
+	{{- $softUi := resources.Get "scss/soft-design-system-pro.scss" | resources.ToCSS (dict "enableSourceMap" true "outputStyle" "compressed") }}
+	{{ $styles := $softUi | postCSS (dict "config" "./assets/css/postcss.config.js") | minify | fingerprint  -}}
+	<!-- {{$styles.Permalink}} -->
+	<link rel="stylesheet" href="{{$softUi.Permalink}}">
+
+	<!-- Bruno's Code -->
+	{{- if (.HasShortcode "youtube") -}}
+	{{- $plyr_css := resources.Get "/css/plyr/plyr.css" -}}
+	<link rel="stylesheet" href="{{- $plyr_css.RelPermalink -}}">
+	{{end}}
+	{{- with .OutputFormats.Get "rss" -}}
+	<link rel="{{- .Rel -}}" type="{{- .MediaType.Type -}}" href="{{- .Permalink | safeURL -}}" title="{{- $.Site.Title -}}">
+	{{- end -}}
+
+	<link rel="alternate" href="{{- .Permalink -}}" hreflang="{{- .Lang -}}">
+	{{- if .IsTranslated -}}
+		{{- range .Translations -}}
+	<link rel="alternate" href="{{- .Permalink -}}" hreflang="{{- .Lang -}}">
+		{{- end}}
+	{{- end -}}
+	<meta property="og:title" content="{{- .Title -}}" />
+	{{- block "description" . -}}
+	{{ partial "description.html" . }}
+	{{- end -}}
+
+	{{- with .Params.tags -}}
+	<meta property="keywords" content="{{- range . -}}{{- . -}}, {{- end -}}">
+	{{- end -}}
+
+	<meta property="og:type" content="{{- if .IsPage -}}article{{- else -}}website{{- end -}}" />
+	<meta property="og:url" content="{{- .Permalink -}}" />
+	{{- with .Params.images -}}{{- range first 6 . -}}
+	<meta property="og:image" content="{{- . | absURL -}}" />
+	{{- end -}}{{- end -}}
+	{{- if .IsPage -}}
+	{{- if not .PublishDate.IsZero -}}
+	<meta name="published_time" property="article:published_time" content="{{- .PublishDate.Format "2006-01-02T15:04:05-07:00" | safeHTMLAttr -}}"/>
+	{{- else if not .Date.IsZero -}}<meta property="article:published_time" content="{{- .Date.Format "2006-01-02T15:04:05-07:00" | safeHTMLAttr -}}"/>
+	{{- end -}}
+	{{- if not .Lastmod.IsZero -}}<meta name="published_time" property="article:modified_time" content="{{- .Lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTMLAttr -}}"/>{{- end -}}
+	{{- else -}}
+	{{- if not .Date.IsZero -}}
+	<meta property="og:updated_time" content="{{- .Lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTMLAttr -}}"/>
+	{{- end -}}
+	{{- end -}}
+	{{- with .Params.audio -}}<meta property="og:audio" content="{{- . -}}" />{{- end -}}
+	{{- with .Params.locale -}}<meta property="og:locale" content="{{- . -}}" />{{- end -}}
+	{{- with .Site.Params.title -}}<meta property="og:site_name" content="{{ . }}" />{{- end -}}
+	{{- with .Params.videos -}}
+	{{- range . -}}
+	<meta property="og:video" content="{{- . | absURL -}}" />
+	{{- end -}}{{- end -}}
+	<!-- If it is part of a series, link to related articles -->
+	{{- $permalink := .Permalink -}}
+	{{- $siteSeries := .Site.Taxonomies.series -}}{{- with .Params.series -}}
+	{{- range $name := . -}}
+	  {{- $series := index $siteSeries $name -}}
+	  {{- range $page := first 6 $series.Pages -}}
+		{{- if ne $page.Permalink $permalink -}}<meta property="og:see_also" content="{{- $page.Permalink -}}" />{{- end -}}
+	  {{- end -}}
+	{{- end -}}{{- end -}}
+	{{- if .IsPage -}}
+	{{ with $author.Params.name }}
+		<meta name="author" content="{{ . }}">
+	{{ end }}
+	{{- with $author.Params.profiles.facebook -}}
+	<meta property="article:author" content="{{- . -}}" />
+	<meta property="article:publisher" content="{{- . -}}" />
+	{{ end }}
+	<meta property="article:section" content="{{- .Section -}}" />
+	{{- with .Params.tags -}}{{- range first 6 . -}}
+	<meta property="article:tag" content="{{- . -}}" />
+	{{- end -}}{{- end -}}
+	{{ end }}
+
+		<meta property="og:site_name" content="{{ .Site.Title }} {{ T "by" }} {{ $.Site.Params.author }}" />
+		<meta name="twitter:site" content="{{- with $author.Params.twitterusername -}}{{.}}{{end}}"/>
+		<meta name="twitter:title" content="{{- .Title -}}"/>
+		<meta name="twitter:card" content="summary_large_image"/>
+	{{- $headerImage := .Resources.GetMatch "header" -}}
+	{{- if .IsHome -}}
+		<meta property="og:image" content="{{- $siteLogo}}" />
+		<meta property="twitter:image" content="{{- $siteLogo}}" />
+	{{- else if or (and (.Section) (ne .IsPage true)) (.IsPage) -}}
+		{{- with $headerImage -}}
+			{{- $image := .Fill "640x640" -}}
+			{{- with $image -}}
+			<meta name="twitter:image" content="{{- .Permalink -}}"/>
+			<meta property="og:image" content="{{- .Permalink -}}" />
+			{{- else -}}
+			<meta name="twitter:image" content="{{- $.Site.Params.defaultImage -}}"/>
+			<meta property="og:image" content="{{- $.Site.Params.defaultImage -}}" />
+			{{- end -}}
+		{{- end -}}
+	{{- end -}}
+
+	{{- if not .Date.IsZero -}}<meta property="og:updated_time" content="{{- .Lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTMLAttr -}}"/>{{- end -}}
+	{{- with .Params.audio -}}<meta property="og:audio" content="{{- . -}}" />{{- end -}}
+	{{- with .Params.locale -}}<meta property="og:locale" content="{{- . -}}" />{{- end -}}
+	{{- with .Params.videos -}}{{- range .Params.videos -}}
+	<meta property="og:video" content="{{- . | absURL -}}" />{{- end -}}{{- end -}}
+	<!-- If it is part of a story, link to related articles -->
+	{{- if .IsPage -}}
+	  {{- $permalink := .Permalink -}}
+	  {{- range first 6 (where (where .Site.RegularPages ".Params.options.unlisted" false) "Section" "=" .Section ) -}}
+		{{- if ne .Permalink $permalink -}}<meta property="og:see_also" content="{{- .Permalink -}}" />{{- end -}}
+	  {{- end -}}
+	<meta property="article:author" content="{{- $.Site.Params.author -}}" />
+	{{- with $author.Params.twitterusername -}}
+	<meta name="twitter:creator" content="{{- . -}}">
+	{{- end -}}
+	<meta property="article:publisher" content="{{- $author.Params.profiles.facebook -}}" />
+	<meta property="article:modified_time" content="{{- .Lastmod -}}" />
+	<meta property="article:section" content="{{- .Section -}}" />
+	{{- with .Params.tags -}}{{- range first 6 . -}}
+	<meta property="article:tag" content="{{- . -}}" />{{- end -}}{{- end -}}
+	{{- end -}}
+	<meta name="twitter:dnt" content="on">
+
+	<!-- Facebook Page Admin ID for Domain Insights -->
+	{{- with $.Site.Social.facebook_admin -}}<meta property="fb:admins" content="{{- . -}}" />{{- end -}}
+	{{- with $.Site.Social.facebook_app_id -}}<meta property="fb:app_id" content="{{- . -}}" />{{- end -}}
+	{{- with $.Site.Params.googleSiteVerification -}}<meta name="google-site-verification" content="{{- . -}}" />{{- end -}}
+	{{- if ne .Site.IsServer true -}}
+	{{- with $.Site.Params.googleTagManager -}}
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','{{- . -}}');</script>
+	<!-- End Google Tag Manager -->
+	{{- end -}}
+	{{- end -}}
+	<!-- Cloudflare Web Analytics -->
+	<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2614aef0df2f41c8b71d86eaf40b571e"}'></script>
+	<!-- End Cloudflare Web Analytics -->
+	<link rel="apple-touch-icon" sizes="57x57" href="/static/favicon/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/static/favicon/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/static/favicon/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/static/favicon/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/static/favicon/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/static/favicon/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/static/favicon/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/static/favicon/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="/static/favicon/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/static/favicon/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/static/favicon/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/static/favicon/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	{{ block "head" . }}
+	<!-- custom head -->
+	{{ end }}
+
+	<!-- /Bruno's -->
+</head>
+
+<body class="{{ block "bodyclasses" . }}{{ end }} sidebar-collapse" id="{{ block "bodyid" . }}home{{ end }}" {{ block "data-attributes" . }}{{ end }}>
+	{{- if eq .Site.IsServer false -}}
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{- $.Site.Params.googleTagManager -}}"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+	{{- end -}}
+
+	<!-- Navbar -->
+	<div class="container position-sticky z-index-sticky top-0">
+		<div class="row">
+			<div class="col-12">
+				<nav class="navbar navbar-expand-lg  blur blur-rounded top-0 z-index-fixed shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+					<div class="container-fluid">
+						<a class="navbar-brand font-weight-bolder ms-sm-3" href="{{- .Site.BaseURL | relLangURL -}}" rel="tooltip" title="{{ .Site.Title }}" data-placement="bottom">
+							<i class="fas fa-home"></i>
+						</a>
+						<button class="navbar-toggler shadow-none ms-md-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon mt-2">
+								<span class="navbar-toggler-bar bar1"></span>
+								<span class="navbar-toggler-bar bar2"></span>
+								<span class="navbar-toggler-bar bar3"></span>
+							</span>
+						</button>
+						<div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
+							{{ if isset $.Site.Menus "main" }}
+							<ul class="navbar-nav navbar-nav-hover mx-auto">
+								{{- range .Site.Menus.main -}}
+								<li class="nav-item px-3 {{ if (or ( $.Page.IsMenuCurrent "main" .) ( $.Page.HasMenuCurrent "main" .)) }} active {{- end -}}">
+									<a href="{{- .URL | absLangURL -}}" title="{{- .Post -}}" class="nav-link top-menu menu-click {{- .Identifier | urlize -}} {{.Params.class }}">{{- .Name | safeHTML -}}</a>
+								</li>
+								{{- end -}}  <!-- end range .Site.Menus.main -->
+							</ul>
+							{{ end }}
+
+							{{ if isset $.Site.Menus "topright" }}
+							<ul class="navbar-nav ms-auto">
+								{{- range .Site.Menus.topright -}}
+								<li class="nav-item px-3 {{ if (or ( $.Page.IsMenuCurrent "topright" .) ( $.Page.HasMenuCurrent "topright" .)) }} active {{- end -}}">
+									<a href="{{- .URL | absLangURL -}}" title="{{- .Post -}}" class="{{- .Identifier | urlize -}} {{ .Params.class }}">{{- .Name | safeHTML -}}</a>
+								</li>
+								{{- end -}}  <!-- end range .Site.Menus.mainright -->
+							</ul>
+							{{ else }}
+							{{ end }}
+
+							<ul class="navbar-nav">
+								{{- if .Site.IsMultiLingual -}}
+								<li class="nav-item">
+										{{- range .Site.Languages -}}
+											{{- if eq . $.Site.Language -}}
+															<a href="#" title="{{- .LanguageName -}}" class="btn btn-sm  bg-gradient-secondary  btn-round mb-0 me-1 disabled">
+															{{- .Lang -}}
+															</a>
+													{{- else -}} <!-- else if not eq . $.Site.Language -->
+														{{- if eq (len $.Translations) 0 -}}
+															<a title="{{- .LanguageName -}}" class="btn btn-sm  bg-gradient-primary  btn-round mb-0 me-1">{{- .Lang -}}</a>
+															</li>
+															{{- else -}}
+															{{- range $.Translations -}}
+																<a href="{{- .Permalink -}}" title="{{- .Language.LanguageName -}}" class="btn btn-sm  bg-gradient-primary  btn-round mb-0 me-1">{{- .Lang -}}</a>
+															{{- end -}} <!-- end range translations -->
+
+													{{- end -}} <!-- if  len translation 0  -->
+
+											{{- end -}} <!-- if eq . $.Site.Language -->
+
+										{{- end -}} <!-- range site languages -->
+
+								</li>
+								{{- end -}} <!-- end if site is multilingual   -->
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<!-- End Navbar -->
+			</div>
+		</div>
+	</div>
+	{{ block "main" . }}{{ end }}
+	{{- if (ne $.Params.options.hideSubscribeForm true | and (ne .Section "instagram")) -}}
+	<section class="py-7">
+	  <div class="container">
+	    <div class="row">
+	      <div class="col-lg-5 me-auto">
+	        <div class=" h4 title">{{ T "subscribe_label" }}</div>
+	        <p class="description">
+	          {{- T "subscribe_description" -}}
+	        </p>
+	      </div>
+	      <div class="col-lg-6 d-flex justify-content-center flex-column ms-auto">
+	        <form id="footerSubscribeForm" method="post" action="{{ $.Site.Params.tinyletter }}" target="popupwindow" onsubmit="window.open('{{ $.Site.Params.tinyletter }}', 'popupwindow', 'scrollbars=yes,width=800,height=600');return true">
+	          <div class="row">
+	            <div class="col-sm-8">
+	              <div class="input-group mb-4">
+	                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+	                <input class="form-control" placeholder="Your Email..." type="text">
+	              </div>
+	            </div>
+	            <div class="col-sm-4">
+	              <input type="submit" class="btn bg-gradient-primary w-100" value="{{ T "subscribe" }}"></input>
+	            </div>
+	          </div>
+	        </form>
+	      </div>
+	    </div>
+	  </div>
+	</section>
+	{{ end }}
+
+	{{- if  ne .Section "instagram" | and ( ne $.Params.options.hideFooter true ) -}}
+		{{- partialCached "footer-dark.html" . -}}
+	{{- end -}}
+	<!--   Core JS Files   -->
+	{{ $popper := resources.Get "js/core/popper.min.js" }}
+	<script src="{{$popper.Permalink}}" type="text/javascript"></script>
+	{{ $bootstrapJs := resources.Get "js/core/bootstrap.min.js" }}
+	<script src="{{$bootstrapJs.Permalink}}" type="text/javascript"></script>
+	{{ $perfectScrollbar := resources.Get "js/plugins/perfect-scrollbar.min.js" }}
+	<script src="{{ $perfectScrollbar.Permalink }}"></script>
+	<!--  Plugin for TypedJS, full documentation here: https://github.com/mattboldt/typed.js/ -->
+	{{ $typedjs := resources.Get "js/plugins/typedjs.js" }}
+	<script src="{{ $typedjs.Permalink }}"></script>
+	<!--  Plugin for TypedJS, full documentation here: https://github.com/inorganik/CountUp.js -->
+	{{ $countup := resources.Get "js/plugins/countup.min.js" }}
+	<script src="{{$countup.Permalink}}"></script>
+	<!--  Plugin for Parallax, full documentation here: https://github.com/dixonandmoe/rellax -->
+	{{ $rellax := resources.Get "js/plugins/rellax.min.js" }}
+	<script src="{{$rellax.Permalink}}"></script>
+	<!--  Plugin for TiltJS, full documentation here: https://gijsroge.github.io/tilt.js/ -->
+	{{ $tilt := resources.Get "js/plugins/tilt.min.js" }}
+	<script src="{{$tilt.Permalink}}"></script>
+	<!--  Plugin for Selectpicker - ChoicesJS, full documentation here: https://github.com/jshjohnson/Choices -->
+	<!-- <script src="/js/plugins/choices.min.js"></script> -->
+	<!--  Plugin for Parallax, full documentation here: https://github.com/wagerfield/parallax  -->
+	{{ $parallax := resources.Get "js/plugins/parallax.min.js" }}
+	<script src="{{$parallax.Permalink}}"></script>
+	<!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+	{{ $nouislider := resources.Get "js/plugins/nouislider.min.js" }}
+	<script src="{{$nouislider.Permalink}}" type="text/javascript"></script>
+	<!--  Plugin for the GlideJS Carousel, full documentation here: http://kenwheeler.github.io/slick/ -->
+	{{ $glidejs := resources.Get "js/plugins/glidejs.min.js" }}
+	<script src="{{$glidejs.Permalink}}" type="text/javascript"></script>
+	<!--  Plugin for the blob animation -->
+	{{ $anime := resources.Get "js/plugins/anime.min.js" }}
+	<script src="{{$anime.Permalink}}" type="text/javascript"></script>
+	<!-- Chart JS -->
+	<!-- <script src="/js/plugins/chartjs.min.js"></script> -->
+	<!-- Control Center for Soft UI Kit: parallax effects, scripts for the example pages etc -->
+	<!--  Google Maps Plugin    -->
+	<!-- 
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTTfWur0PDbZWPr7Pmq8K3jiDp0_xUziI"></script>
+	-->
+	{{$softUiJs := resources.Get "js/soft-design-system-pro.min.js"}}
+	<script src="{{$softUiJs.Permalink}}?v=1.0.3" type="text/javascript"></script>
+	<script type="text/javascript">
+		if (document.getElementById('state1')) {
+			const countUp = new CountUp('state1', document.getElementById("state1").getAttribute("countTo"));
+			if (!countUp.error) {
+				countUp.start();
+			} else {
+				console.error(countUp.error);
+			}
+		}
+		if (document.getElementById('state2')) {
+			const countUp1 = new CountUp('state2', document.getElementById("state2").getAttribute("countTo"));
+			if (!countUp1.error) {
+				countUp1.start();
+			} else {
+				console.error(countUp1.error);
+			}
+		}
+		if (document.getElementById('state3')) {
+			const countUp2 = new CountUp('state3', document.getElementById("state3").getAttribute("countTo"));
+			if (!countUp2.error) {
+				countUp2.start();
+			} else {
+				console.error(countUp2.error);
+			};
+		}
+	</script>
+	{{- if .HasShortcode "gallery" -}}
+		<!-- Root element of PhotoSwipe. Must have class pswp. -->
+		<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+		<!-- Background of PhotoSwipe.
+			 It's a separate element, as animating opacity is faster than rgba(). -->
+		<div class="pswp__bg"></div>
+		<!-- Slides wrapper with overflow:hidden. -->
+		<div class="pswp__scroll-wrap">
+			<!-- Container that holds slides.
+			  PhotoSwipe keeps only 3 of them in DOM to save memory.
+			  Don't modify these 3 pswp__item elements, data is added later on. -->
+			<div class="pswp__container">
+			  <div class="pswp__item"></div>
+			  <div class="pswp__item"></div>
+			  <div class="pswp__item"></div>
+			</div>
+			<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+			<div class="pswp__ui pswp__ui--hidden">
+			<div class="pswp__top-bar">
+			  <!--  Controls are self-explanatory. Order can be changed. -->
+			  <div class="pswp__counter"></div>
+			  <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+			  <button class="pswp__button pswp__button--share" title="Share"></button>
+			  <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+			  <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+			  <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+			  <!-- element will get class pswp__preloader--active when preloader is running -->
+			  <div class="pswp__preloader">
+				<div class="pswp__preloader__icn">
+				  <div class="pswp__preloader__cut">
+					<div class="pswp__preloader__donut"></div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+			  <div class="pswp__share-tooltip"></div>
+			</div>
+			<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+			</button>
+			<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+			</button>
+			<div class="pswp__caption">
+			  <div class="pswp__caption__center"></div>
+			</div>
+			</div>
+			</div>
+		</div>
+		<link rel="stylesheet" href="/plugins/photoswipe/photoswipe.css">
+		<link rel="stylesheet" href="/plugins/photoswipe/default-skin/default-skin.css">
+
+		<script src="/plugins/photoswipe/photoswipe.min.js"></script>
+		<script src="/plugins/photoswipe/photoswipe-ui-default.min.js"></script>
+		<script src="/plugins/photoswipe/initphotoswipe.js"></script>
+		<script>initPhotoSwipeFromDOM('.gallery');</script>
+	{{- end -}}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" defer="true"></script>
+	{{$customJs := resources.Get "js/custom.js"}}
+	<script src="{{$customJs.Permalink}}" type="text/javascript" defer="true"></script>
+	<script type="application/ld+json">
+		{ "@context": "http://schema.org",
+		{{- if .IsHome -}}
+		"@type": "WebSite",
+		{{- else -}}
+		"@type": "Article",
+		{{- end -}}
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": {{- .Permalink -}}
+			},
+		"headline": {{- .Title -}},
+		{{- with .Params.subtitle -}}"alternativeHeadline": {{- . -}},{{- end -}}
+		"image": {{- if .IsHome -}}
+					{{- $siteLogo}}
+					{{- else -}}
+						{{- with $headerImage -}}
+						{{- .Permalink -}}
+						{{- else -}}
+						{{- $siteLogo -}}
+					{{- end -}}
+					{{- end -}},
+		"author": {
+		   "@type": "Person",
+		   "name": {{- $author.Params.name -}}
+		},
+		{{- with .Params.tags -}}"keywords": {{- . -}},{{- end -}}
+		"wordcount": {{- .WordCount -}},
+		"publisher": {
+		 "@type": "Organization",
+		 "name": {{- $author.Params.name -}},
+		 "logo": {
+		   "@type": "ImageObject",
+		   "url": {{- $siteLogo}},
+		   "height": 60
+		 }
+		},
+		"url": {{- .Site.BaseURL -}},
+		{{- if not .Date.IsZero -}}
+		"datePublished": {{- .Date.Format "2006-01-02T15:04:05-07:00" -}},
+		"dateCreated": {{- .Date.Format "2006-01-02T15:04:05-07:00" -}},
+		"dateModified": {{- .Lastmod.Format "2006-01-02T15:04:05-07:00" -}},
+		{{- end -}}
+		"description": {{- if .IsHome -}}{{- $.Site.Params.description -}}{{else}}{{- with .Params.description -}}{{- . | plainify | htmlUnescape -}}{{- else -}}{{- .Summary | plainify | htmlUnescape -}}{{- end -}}{{- end -}},
+		"articleBody": {{- .Plain | htmlUnescape -}}
+		}
+		</script>
+	{{ block "list-javascript" . }}{{ end }}
+	{{- with .Params.scripts -}}
+		{{- range . -}}
+			{{- . | safeHTML -}}
+		{{- end -}}
+	{{- end -}}
+</body>
+</html>

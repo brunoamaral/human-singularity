@@ -1,0 +1,50 @@
+{{ $ref := (.Get "ref") }}
+{{ $page := "" }}
+{{ range .Page.Sites }}
+  {{ if eq (print (.GetPage $ref).File) $ref }}
+    {{ $page = (.GetPage $ref) }}
+  {{ end }}
+{{ end }}
+
+
+
+{{ with $page }}
+  {{ $author := "" }}
+  {{ $avatarimage := ""}}
+  {{ $author := $.Site.GetPage (printf "authors/%s/" (index .Params.authors 0) )}}
+  {{ $category := (index .Params.categories 0 ) }}
+
+  {{- with $author.Resources.GetMatch "avatar" -}}
+      {{- $avatarimage = (.Fill "110x110").RelPermalink -}}
+  {{- end }}
+
+  {{ $image := "" }}
+  {{- with .Resources.GetMatch "header" }}{{ $image = .Fill "720x370" }}{{ end }}
+  <div class="container">
+    <div class="row justify-space-between py-2">
+      <div class="card card-plain card-blog mt-5">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card-image position-relative border-radius-lg">
+              <div class="blur-shadow-image">
+                <img class="img border-radius-lg" src="{{ $image.RelPermalink }}">
+              </div>
+            <div class="colored-shadow" style="background-image: url('{{ $image.RelPermalink }}');"></div></div>
+          </div>
+          <div class="col-md-7 my-auto ms-md-3 mt-md-auto mt-4">
+            <h3>
+              <a href="{{ .Permalink }}" class="text-dark font-weight-normal">{{ .Title }}</a>
+            </h3>
+            <p>
+              {{ .Summary | truncate 140 }} <a href="{{ .Permalink }}" class="text-dark"> {{T "read_more" }} </a>
+            </p>
+    				<div class="author">
+    				   <img src="{{ $avatarimage }}" alt="{{ $author.Params.name }}" class="avatar avatar-sm shadow me-2">
+    				   <p class="my-auto">{{ $author.Params.name }}</p>
+    				</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{{ end }}
