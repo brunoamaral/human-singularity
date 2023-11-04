@@ -14,6 +14,7 @@
   { "id": "latest_blogposts", "translation": "Latest Blogposts"},
   { "id": "latest_post", "translation": "Latest Post"},
   { "id": "legal", "translation": "Legal"},
+  { "id": "main", "translation":"Site map"},
   { "id": "mentions", "translation": "Mentions"},
   { "id": "min_read", "translation": "min read"},
   { "id": "newer_photos", "translation": "Newer Photos"},
