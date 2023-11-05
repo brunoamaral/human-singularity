@@ -30,33 +30,80 @@ scripts:
 
 <h3>Donations</h3>
 
-Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic commodi quaerat unde nesciunt quos, sapiente corrupti nemo numquam natus odio, aliquam quia, blanditiis sed excepturi rerum nulla magni veniam maiores.
 
-<div id="">
-  <ol id="donations" class="mt-3">
+<section class="pt-5 mt-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Name</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Email</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Amount</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Date</th>
+                </tr>
+              </thead>
+              <tbody>
 
-  </ol>
-</div>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <script>
   fetch('https://stripe-transparency.dash-tech-daf.workers.dev')
     .then(response => response.json())
     .then(donations => {
-      // Get the donations container
-      const donationsContainer = document.getElementById('donations');
+      const tableBody = document.querySelector('.table tbody');
 
-      // Process and display the donations on your site
       donations.forEach(donation => {
-        // Create an element for each donation and add it to the donations container
-        const donationElement = document.createElement('li');
-        donationElement.textContent = `Donation of ${donation.amount_paid} ${donation.currency} received on ${donation.charge_date}.`;
-        donationElement.classList.add('text-bold')
-        donationsContainer.appendChild(donationElement);
+        const row = document.createElement('tr');
+
+        const nameCell = document.createElement('td');
+        nameCell.innerHTML = `<div class="d-flex px-2 py-1">
+                                <div class="d-flex flex-column justify-content-center">
+                                  <h6 class="mb-0 text-xs">${donation.name}</h6>
+                                </div>
+                              </div>`;
+        row.appendChild(nameCell);
+
+        const emailCell = document.createElement('td');
+        emailCell.innerHTML = `<div class="d-flex px-2 py-1">
+                                 <div class="d-flex flex-column justify-content-center">
+                                   <p class="text-xs text-secondary mb-0">${donation.email}</p>
+                                 </div>
+                               </div>`;
+        row.appendChild(emailCell);
+
+        const amountCell = document.createElement('td'); 
+        amountCell.classList.add('align-middle','ps-3');
+        amountCell.innerHTML = `<div class="d-flex px-2 py-1">
+          <div class="d-flex flex-column justify-content-center">
+            <p class="text-xs text-secondary mb-0 text-uppercase">${donation.amount_paid} ${donation.currency}</p>
+          </div>
+        </div>`;
+        row.appendChild(amountCell);
+
+        const dateCell = document.createElement('td');
+        dateCell.classList.add('align-middle','ps-3');
+        const date = new Date(donation.charge_date);
+        const formattedDate = date.toLocaleDateString('en-GB', {
+          day: 'numeric', month: 'long', year: 'numeric'
+        });
+        dateCell.innerHTML = `<span class="text-secondary text-xs font-weight-bold">${formattedDate}</span>`;
+        row.appendChild(dateCell);
+
+        tableBody.appendChild(row);
       });
     })
     .catch(error => {
       console.error('Error fetching donation data:', error);
     });
 </script>
-
-  
