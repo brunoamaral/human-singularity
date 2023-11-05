@@ -9,3 +9,16 @@ sectionPagesMenu = 'main'
 [[menu.legal]]
     name = '<strong>Tax ID</strong> PT517563363'
     pageRef = ''
+
+[security]
+  enableInlineShortcodes = false
+  [security.exec]
+    allow = ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$']
+    osEnv = ['(?i)^(PATH|PATHEXT|APPDATA|TMP|TEMP|TERM)$']
+
+  [security.funcs]
+    getenv = ['^HUGO_','SLUG','post_datetime','post_image','post_tags','post_slug','post_title','post_content','google_maps_link','latitude','longitude']
+
+  [security.http]
+    methods = ['(?i)GET|POST']
+    urls = ['.*']
