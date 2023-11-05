@@ -1,0 +1,50 @@
+---
+authors:
+  - bruno-amaral
+date: 2023-11-05T19:40:21Z
+description: ""
+draft: false
+resources: 
+ - src: nat-watson-Qerg85B7JDI-unsplash.jpg
+   name: "header"
+slug:
+subtitle: 
+lead:
+tags: 
+  - 
+categories: 
+  - 
+title: "Transparency"
+disable_comments: true
+options:
+  header: header-2
+  unlisted: false
+  showHeader: true
+  hideFooter: false
+  hideSubscribeForm: true
+
+scripts:
+  -
+---
+
+<h3>Donations</h3>
+
+Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic commodi quaerat unde nesciunt quos, sapiente corrupti nemo numquam natus odio, aliquam quia, blanditiis sed excepturi rerum nulla magni veniam maiores.
+
+<script>
+  fetch('https://stripe-transparency.dash-tech-daf.workers.dev')
+    .then(response => response.json())
+    .then(donations => {
+      // Process and display the donations on your site
+      donations.forEach(donation => {
+        // Create an element for each donation and add it to the DOM
+        const donationElement = document.createElement('div');
+        donationElement.textContent = `Donation of ${donation.amount} ${donation.currency} received.`;
+        document.body.appendChild(donationElement);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching donation data:', error);
+    });
+  </script>
+  
