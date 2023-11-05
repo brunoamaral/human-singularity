@@ -1,8 +1,4 @@
 {{ define "bodyclasses" }}root{{ end }}
-{{ define "description" }}
-	<meta name="description" content="{{ $.Site.Params.description }}" />
-	<meta name="twitter:description" content="{{ $.Site.Params.description }}"/>
-{{ end }}
 {{ define "main" }}
   {{ partial "header" .}}
   {{.Content | safeHTML }}
