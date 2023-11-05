@@ -1,9 +1,8 @@
-
-{{ if .Params.description }}
+{{ if $.Params.description }}
 	<meta name="description" content="{{ .Params.description }}" />
 	<meta name="twitter:description" content="{{ .Params.description }}"/>
 	<meta property="og:description" content="{{ .Params.description }}"/>
-{{ else if .Params.summary }}
+{{ else if $.Params.summary }}
 	<meta name="description" content="{{ .Params.summary }}" />
 	<meta name="twitter:description" content="{{ .Params.summary }}"/>
 	<meta property="og:description" content="{{ .Params.summary }}"/>
