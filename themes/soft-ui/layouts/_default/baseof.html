@@ -53,7 +53,9 @@ Coded by www.creative-tim.com
 	{{ $styles := $softUi | postCSS (dict "config" "./assets/css/postcss.config.js") | minify | fingerprint  -}}
 	<!-- {{$styles.Permalink}} -->
 	<link rel="stylesheet" href="{{$softUi.Permalink}}">
-
+	
+	{{- $customCss := resources.Get "css/custom.css" }}
+	<link rel="stylesheet" href="{{ $customCss.Permalink }}">
 	<!-- Bruno's Code -->
 	{{- if (.HasShortcode "youtube") -}}
 	{{- $plyr_css := resources.Get "/css/plyr/plyr.css" -}}
