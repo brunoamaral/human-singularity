@@ -7,7 +7,7 @@ defaultAuthor = ""
 sectionPagesMenu = 'main'
 [menu]
 [[menu.legal]]
-    name = '<strong>Tax ID</strong> PT517563363'
+    name = '</a><span class="text-white text-sm ps-3 d-block"><strong>Tax ID</strong> PT517563363<br /><strong>Address</strong><br />Rua  Abade Faria 48, rc dto 1900-008 Lisbon, Portugal</span>'
     pageRef = ''
 
 [security]
