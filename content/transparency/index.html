@@ -114,7 +114,30 @@ menu:
     
   </div>
 </section>
+
+<section class="py-3">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-md-3">
+        <span class="text-gradient text-warning h1"><span id="activeusers"></span></span>
+        <p>Active users right now</p>
+      </div>
+      <div class="col-md-3">
+        <span class="text-gradient text-warning h1"><span id="users"></span></span>
+        <p>Users in the last 7 days</p>
+      </div>
+      <div class="col-md-3">
+        <span class="text-gradient text-warning h1"><span id="pageviews"></span></span>
+        <p>Pageviews in the last 7 days</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+        
+
 <script>
+  function DonationsTable(){
   fetch('https://stripe-transparency.dash-tech-daf.workers.dev')
     .then(response => response.json())
     .then(donations => {
@@ -163,4 +186,34 @@ menu:
     .catch(error => {
       console.error('Error fetching donation data:', error);
     });
+  }
+
+  function fetchStats() {
+    fetch('https://umami-transparency.dash-tech-daf.workers.dev/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(stats => {
+        console.log(stats);
+        const activeUsers = stats.active.reduce((total, current) => total + current.x, 0);
+        document.getElementById('activeusers').textContent = activeUsers;
+        const users = stats.stats.uniques.value;
+        document.getElementById('users').textContent = users;
+        const pageviews = stats.stats.pageviews.value;
+        document.getElementById('pageviews').textContent = pageviews;      
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+  }
+  
+  // Call the function to execute
+  fetchStats();
+  
+
+  DonationsTable()
+
 </script>
