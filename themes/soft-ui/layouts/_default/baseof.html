@@ -132,8 +132,9 @@ Coded by www.creative-tim.com
 		<meta name="twitter:card" content="summary_large_image"/>
 	{{- $headerImage := .Resources.GetMatch "header" -}}
 	{{- if .IsHome -}}
-		<meta property="og:image" content="{{- $siteLogo}}" />
-		<meta property="twitter:image" content="{{- $siteLogo}}" />
+		{{$headerImage = $headerImage.Fill "640x640"}}
+		<meta property="og:image" content="{{- $headerImage.Permalink}}" />
+		<meta property="twitter:image" content="{{- $headerImage.Permalink }}" />
 	{{- else if or (and (.Section) (ne .IsPage true)) (.IsPage) -}}
 		{{- with $headerImage -}}
 			{{- $image := .Fill "640x640" -}}
