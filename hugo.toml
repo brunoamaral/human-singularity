@@ -2,23 +2,46 @@ baseURL = "https://human-singularity.org/"
 languageCode = "en-uk"
 title = "Human Singularity Network"
 theme = "soft-ui"
+
 [params]
 defaultAuthor = ""
 sectionPagesMenu = 'main'
+
 [menu]
 [[menu.legal]]
     name = '</a><span class="text-white text-sm ps-3 d-block"><strong>Tax ID</strong> PT517563363<br /><strong>Address</strong><br />Rua  Abade Faria 48, rc dto 1900-008 Lisbon, Portugal</span>'
     pageRef = ''
 
 [security]
-  enableInlineShortcodes = false
-  [security.exec]
-    allow = ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$']
-    osEnv = ['(?i)^(PATH|PATHEXT|APPDATA|TMP|TEMP|TERM)$']
+enableInlineShortcodes = false
 
-  [security.funcs]
-    getenv = ['^HUGO_','SLUG','post_datetime','post_image','post_tags','post_slug','post_title','post_content','google_maps_link','latitude','longitude']
+[security.exec]
+allow = ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$']
+osEnv = ['(?i)^(PATH|PATHEXT|APPDATA|TMP|TEMP|TERM)$']
 
-  [security.http]
-    methods = ['(?i)GET|POST']
-    urls = ['.*']
+[security.funcs]
+getenv = ['^HUGO_','SLUG','post_datetime','post_image','post_tags','post_slug','post_title','post_content','google_maps_link','latitude','longitude']
+
+[security.http]
+methods = ['(?i)GET|POST']
+urls = ['.*']
+
+# Image processing settings
+[imaging]
+# Default quality for JPEG images
+quality = 90
+# Default resample filter, change to "box" for faster processing if needed
+resampleFilter = "catmullrom"
+# Define anchor points for cropping
+anchor = "smart"
+
+# Media Types
+[mediaTypes]
+[mediaTypes."image/jpeg"]
+suffixes = ["jpg", "jpeg"]
+[mediaTypes."image/png"]
+suffixes = ["png"]
+
+# Image processing options for specific types
+# [imaging.exif]
+# includeFields = ["DateTime", "Make", "Model"]
