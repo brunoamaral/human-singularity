@@ -40,7 +40,7 @@ menu:
       <div class="col-lg-10">
         <div class="card shadow-l">
           <div class="table-responsive">
-            <table class="table align-items-center mb-0">
+            <table class="table align-items-center mb-0" id="DonationsTable">
               <thead>
                 <tr>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Name</th>
@@ -64,7 +64,41 @@ menu:
     </div>
   </div>
 </section>
-
+<section class="pt-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center mx-auto pb-5">
+        <h3>Transactions</h3>
+        <p class="mb-1 text-success">Updated monthly</p>
+        </div>
+      <div class="col-lg-10">
+        <div class="card shadow-l">
+          <div class="table-responsive">
+            <table class="table align-items-center mb-0" id="TransactionsTable">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Transaction Date</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Value Date</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Description</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Amount</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Currency</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">Accounting Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+             </table>
+          </div>
+        </div>
+        <div class="col text-end">
+          <a href="https://donate.stripe.com/6oEeVmf1tdHIdOw7ss" target="_blank" class="bg-gradient-primary btn btn-sm btn-primary mt-3 float-right text-right">Make a Donation <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:auto; height:13px; margin-bottom:3px;" class="ps-2">
+            <path d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z" fill="#fff"></path>
+            </svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="py-7">
   <div class="container">
     <div class="row mt-5">
@@ -153,7 +187,7 @@ menu:
   fetch('https://stripe-transparency.dash-tech-daf.workers.dev')
     .then(response => response.json())
     .then(donations => {
-      const tableBody = document.querySelector('.table tbody');
+      const tableBody = document.querySelector('#DonationsTable');
 
       donations.forEach(donation => {
         const row = document.createElement('tr');
@@ -209,7 +243,6 @@ menu:
         return response.json();
       })
       .then(stats => {
-        console.log(stats);
         const activeUsers = stats.active.reduce((total, current) => total + current.x, 0);
         document.getElementById('activeusers').textContent = activeUsers;
         const users = stats.stats.uniques.value;
@@ -221,6 +254,75 @@ menu:
         console.error('There has been a problem with your fetch operation:', error);
       });
   }
+
+  async function fetchTransactionsAndCreateTable(apiEndpoint) {
+    try {
+      // Fetch the JSON data from the API endpoint
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const jsonData = await response.json();
+  
+      // Start building the rows for the table body
+      let tableRows = '';
+  
+      // Loop through each transaction and add a row to the table
+      jsonData.forEach(transaction => {
+        tableRows += `<tr>
+                        <td><div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-xs">${transaction.transaction_date}</h6>
+                          </div>
+                        </div></td>
+                        <td><div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <p class="text-xs text-secondary mb-0">${transaction.value_date}
+                            </p>
+                          </div>
+                        </td>
+                        <td><div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <p class="text-xs text-secondary mb-0">${transaction.description}
+                            </p>
+                          </div>
+                        </td>
+                        <td><div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <p class="text-xs text-secondary mb-0">${transaction.amount}
+                            </p>
+                          </div>
+                        </td>
+                        <td><div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <p class="text-xs text-secondary mb-0">${transaction.currency}
+                            </p>
+                          </div>
+                        </td>
+                        <td><div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <p class="text-xs text-secondary mb-0">${transaction.accounting_balance}
+                            </p>
+                          </div>
+                        </td>
+                      </tr>`;
+      });
+  
+      // Return the HTML rows
+      return tableRows;
+    } catch (error) {
+      console.error('Fetching transactions failed:', error);
+      return `<tr><td colspan="6">Error fetching data: ${error.message}</td></tr>`;
+    }
+  }
+  
+  fetchTransactionsAndCreateTable('https://dash.gregory-ms.com/human-singularity')
+    .then(tableRowsHtml => {
+      // Insert the rows into the tbody of the existing table
+      document.querySelector('#TransactionsTable tbody').innerHTML = tableRowsHtml;
+    });
+  
+    
   
   // Call the function to execute
   fetchStats();
