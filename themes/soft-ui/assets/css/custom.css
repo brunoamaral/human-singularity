@@ -1,4 +1,4 @@
-header h1.text-shadow, header p.lead{
+header h1.text-shadow, header h1 + p.lead{
 	text-shadow: 1px 2px 20px #2c3f76;
 }
 
