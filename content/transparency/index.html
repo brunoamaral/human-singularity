@@ -66,11 +66,12 @@ menu:
 </section>
 <section class="pt-5">
   <div class="container">
+    <!--
     <div class="row justify-content-center">
       <div class="col-lg-6 text-center mx-auto pb-5">
         <h3>Transactions</h3>
         <p class="mb-1 text-success">Updated monthly, donations can take up to 5 business days to be processed.</p>
-        </div>
+      </div>
       <div class="col-lg-10">
         <div class="card shadow-l">
           <div class="table-responsive">
@@ -92,6 +93,7 @@ menu:
         </div>
       </div>
     </div>
+  -->
   </div>
 </section>
 <!-- team -->
@@ -490,11 +492,10 @@ menu:
     }
   }
   
-  fetchTransactionsAndCreateTable('https://dash.gregory-ms.com/human-singularity')
-    .then(tableRowsHtml => {
-      // Insert the rows into the tbody of the existing table
-      document.querySelector('#TransactionsTable tbody').innerHTML = tableRowsHtml;
-    });
+//  fetchTransactionsAndCreateTable('https://dash.gregory-ms.com/human-singularity')
+//    .then(tableRowsHtml => {
+//      document.querySelector('#TransactionsTable tbody').innerHTML = tableRowsHtml;
+//    });
   
     
   
